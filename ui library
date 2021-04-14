@@ -629,7 +629,7 @@ library.newbutton = function(props)
 	--
 	local holder = utility:Create("Frame",{
 		Parent = section,
-		Size = UDim2.new(1,0,0,12),
+		Size = UDim2.new(1,0,0,15),
 		BackgroundTransparency = 1
 	})
 	local button = utility:Create("TextButton",{
@@ -647,7 +647,7 @@ library.newbutton = function(props)
 		Size = UDim2.new(1,0,1,0),
 		Position = UDim2.new(0,0,0,1),
 		BackgroundTransparency = 1,
-		TextSize = 11,
+		TextSize = 12,
 		Font = Enum.Font.Ubuntu,
 		TextColor3 = Color3.fromRGB(255,255,255),
 		TextStrokeColor3 = Color3.fromRGB(0,0,0),
