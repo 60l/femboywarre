@@ -297,8 +297,10 @@ library.new = function(props)
 			screen.Enabled = not screen.Enabled
 			if screen.Enabled == true then
 				game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.Default
+				game:GetService("UserInputService").MouseIconEnabled = true
 			else
 				game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.LockCenter
+				game:GetService("UserInputService").MouseIconEnabled = false
 			end
 		end
 	end)
