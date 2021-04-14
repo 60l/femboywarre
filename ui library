@@ -594,6 +594,34 @@ library.newsection = function(props)
 	return content
 end
 --
+library.newlabel = function(props)
+	local name = props.Name or props.name or "new label"
+	local section = props.section or props.Section
+	--
+	local holder = utility:Create("Frame",{
+		Parent = section,
+		Size = UDim2.new(1,0,0,10),
+		BackgroundTransparency = 1
+	})
+	local title = utility:Create("TextLabel",{
+		Parent = holder,
+		Text = name,
+		Size = UDim2.new(1,0,1,0),
+		Position = UDim2.new(0,0,0,1),
+		BackgroundTransparency = 1,
+		TextSize = 10,
+		Font = Enum.Font.Ubuntu,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextStrokeColor3 = Color3.fromRGB(0,0,0),
+		TextStrokeTransparency = 0.5,
+		TextXAlignment = "Left"
+	})
+	local size = section.Parent.AbsoluteSize.Y
+	section.Parent.Size = UDim2.new(1,0,0,30+section:FindFirstChildOfClass("UIListLayout").AbsoluteContentSize.y)
+	--
+	return title
+end
+--
 library.newtoggle = function(props)
 	local name = props.Name or props.name or "new toggle"
 	local callback = props.Callback or props.callback or props.CallBack or props.callBack or function()end
