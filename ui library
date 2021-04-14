@@ -744,6 +744,8 @@ library.newslider = function(props)
 	--
 	accent.Size = UDim2.new((1/(max-min))*def,0,1,0)
 	--
+	section.Parent.Size = UDim2.new(1,0,0,30+section:FindFirstChildOfClass("UIListLayout").AbsoluteContentSize.y)
+	--
 	accent.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 then
 			local msX = (mouse.X-button.AbsolutePosition.X)/button.AbsoluteSize.X
