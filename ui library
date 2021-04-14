@@ -652,7 +652,6 @@ library.newbutton = function(props)
 		TextColor3 = Color3.fromRGB(255,255,255),
 		TextStrokeColor3 = Color3.fromRGB(0,0,0),
 		TextStrokeTransparency = 0.5,
-		TextXAlignment = "Centre"
 	})
 	local size = section.Parent.AbsoluteSize.Y
 	section.Parent.Size = UDim2.new(1,0,0,30+section:FindFirstChildOfClass("UIListLayout").AbsoluteContentSize.y)
