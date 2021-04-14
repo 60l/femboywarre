@@ -947,4 +947,5 @@ library.newslider = function(props)
 	end)
 end
 --
+print("update 1")
 return library
