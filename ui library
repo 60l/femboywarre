@@ -647,7 +647,7 @@ library.newbutton = function(props)
 		Size = UDim2.new(1,0,1,0),
 		Position = UDim2.new(0,0,0,1),
 		BackgroundTransparency = 1,
-		TextSize = 12,
+		TextSize = 11,
 		Font = Enum.Font.Ubuntu,
 		TextColor3 = Color3.fromRGB(255,255,255),
 		TextStrokeColor3 = Color3.fromRGB(0,0,0),
@@ -656,13 +656,10 @@ library.newbutton = function(props)
 	local size = section.Parent.AbsoluteSize.Y
 	section.Parent.Size = UDim2.new(1,0,0,30+section:FindFirstChildOfClass("UIListLayout").AbsoluteContentSize.y)
 	--
-	local toggled = false
 	local storedcol = Color3.fromRGB(73,74,82)
 	--
 	button.MouseButton1Down:Connect(function()
-		toggled = not toggled
-		if toggled then
-			callback(toggled)
+			callback()
 			local info = TweenInfo.new(
 				0.15,
 				Enum.EasingStyle.Quint,
@@ -671,8 +668,7 @@ library.newbutton = function(props)
 			local tween = ts:Create(button,info,{BackgroundColor3 = Color3.fromRGB(110,110,117)})
 			storedcol = Color3.fromRGB(110,110,117)
 			tween:Play()
-		else
-			callback(toggled)
+			wait(0.15)
 			local info = TweenInfo.new(
 				0.15,
 				Enum.EasingStyle.Quint,
@@ -681,7 +677,6 @@ library.newbutton = function(props)
 			local tween = ts:Create(button,info,{BackgroundColor3 = Color3.fromRGB(73,74,82)})
 			storedcol = Color3.fromRGB(73,74,82)
 			tween:Play()
-		end
 	end)
 	--
 	button.MouseEnter:Connect(function()
