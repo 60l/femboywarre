@@ -1,0 +1,833 @@
+local library = {}
+local utility = {}
+local accents = {}
+--
+local whites = {}
+local tabs = {}
+local sections = {}
+--
+local plr = game.Players.LocalPlayer
+local ts = game:GetService("TweenService")
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+--
+function utility:Create(instance, properties)
+	local object = Instance.new(instance)
+	local properties = properties or {}
+	for i, v in pairs(properties) do
+		object[i] = v
+	end
+	return object
+end
+--
+function utility:ZigZag(X)
+	return math.acos(math.cos(X*math.pi))/math.pi
+end
+--
+function utility:Round(num, dec)
+	return math.round(num * 10^dec) * 10^-dec
+end
+--
+local huecolor = Color3.fromHSV(1,1,1)
+local chroma
+--
+function utility:MakeChroma(val)
+	if chroma then
+		if val == false then
+			chroma:Disconnect()
+		end
+	else
+		local currentcounter = 0
+		chroma = rs.RenderStepped:Connect(function()
+			for i,v in pairs(accents) do
+				if i == "topbaraccent" then
+					local info = TweenInfo.new(
+						1,
+						Enum.EasingStyle.Quint,
+						Enum.EasingDirection.Out
+					)
+					local tween = ts:Create(v,info,{BackgroundColor3 = Color3.fromHSV(utility:ZigZag(currentcounter),0.75,1)},true)
+					tween:Play()
+				end
+			end
+			local curr = 0
+			for i,v in pairs(sections) do
+				for z,x in pairs(v:GetDescendants()) do
+					if x.Name == "at" then
+						if x.BackgroundColor3 ~= Color3.fromRGB(73, 74, 82) and x.Parent.Parent.Parent.Parent.Parent.Parent.Visible == true then
+							local info = TweenInfo.new(
+								0.25,
+								Enum.EasingStyle.Quint,
+								Enum.EasingDirection.Out
+							)
+							local tween = ts:Create(x,info,{BackgroundColor3 = Color3.fromHSV(utility:ZigZag(currentcounter+curr),0.75,1)},true)
+							tween:Play()
+						end
+					end
+					if x.Name == "as" and x.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Visible == true then
+						local info = TweenInfo.new(
+							0.25,
+							Enum.EasingStyle.Quint,
+							Enum.EasingDirection.Out
+						)
+						local tween = ts:Create(x,info,{BackgroundColor3 = Color3.fromHSV(utility:ZigZag(currentcounter+curr),0.5,1)},true)
+						tween:Play()
+					end
+				end
+				curr = curr+0.05
+			end
+			currentcounter = currentcounter+0.01
+		end)
+	end
+end
+--
+local colormade
+--
+function utility:MakeColor(col)
+	local currentcounter = 0
+	colormade = rs.RenderStepped:Connect(function()
+		for i,v in pairs(accents) do
+			if i == "topbaraccent" then
+				local info = TweenInfo.new(
+					1,
+					Enum.EasingStyle.Quint,
+					Enum.EasingDirection.Out
+				)
+				local tween = ts:Create(v,info,{BackgroundColor3 = Color3.fromHSV(col,utility:ZigZag(currentcounter),1)},true)
+				tween:Play()
+			end
+		end
+		local curr = 0
+		for i,v in pairs(sections) do
+			for z,x in pairs(v:GetDescendants()) do
+				if x.Name == "at" then
+					if x.BackgroundColor3 ~= Color3.fromRGB(73, 74, 82) and x.Parent.Parent.Parent.Parent.Parent.Parent.Visible == true then
+						local info = TweenInfo.new(
+							0.25,
+							Enum.EasingStyle.Quint,
+							Enum.EasingDirection.Out
+						)
+						local tween = ts:Create(x,info,{BackgroundColor3 = Color3.fromHSV(col,utility:ZigZag(currentcounter+curr),1)},true)
+						tween:Play()
+					end
+				end
+				if x.Name == "as" and x.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Visible == true then
+					local info = TweenInfo.new(
+						0.25,
+						Enum.EasingStyle.Quint,
+						Enum.EasingDirection.Out
+					)
+					local tween = ts:Create(x,info,{BackgroundColor3 = Color3.fromHSV(col,utility:ZigZag(currentcounter+curr),1)},true)
+					tween:Play()
+				end
+			end
+			curr = curr+0.05
+		end
+		currentcounter = currentcounter+0.005
+	end)
+end
+--
+counter = 0
+--
+library.new = function(props)
+	local name = props.Name or props.name or "Entropy"
+	-- 1
+	local screen = utility:Create("ScreenGui",{
+		Parent = plr.PlayerGui,
+		DisplayOrder = 9999,
+		Name = name,
+		ZIndexBehavior = "Sibling"
+	})
+	-- 2
+	local inset = game:GetService("GuiService"):GetGuiInset().y
+	local black = utility:Create("Frame",{
+		Parent = screen,
+		BackgroundColor3 = Color3.fromRGB(0,0,0),
+		BorderSizePixel = 0,
+		BackgroundTransparency = 0.65,
+		Size = UDim2.new(1,0,1,inset),
+		Position = UDim2.new(0,0,0,-inset),
+		ZIndex = -1
+	})
+	local mainframe = utility:Create("Frame",{
+		Parent = screen,
+		Size = UDim2.new(0,450,0,550),
+		Position = UDim2.new(0,20,0,20),
+		BackgroundTransparency = 1
+	})
+	-- 3
+	local background = utility:Create("Frame",{
+		Parent = mainframe,
+		Size = UDim2.new(1,0,1,0),
+		AnchorPoint = Vector2.new(0.5,0.5),
+		Position = UDim2.new(0.5,0,0.5,0),
+		BackgroundColor3 = Color3.fromRGB(32,32,38),
+		BorderColor3 = Color3.fromRGB(27,27,33),
+		BorderSizePixel = 1
+	})
+	local tabslist = utility:Create("Frame",{
+		Parent = mainframe,
+		Size = UDim2.new(1,0,0,30),
+		Position = UDim2.new(0,0,0,0),
+		BackgroundTransparency = 1,
+		ZIndex = 2
+	})
+	local topbar = utility:Create("Frame",{
+		Parent = mainframe,
+		Size = UDim2.new(1,0,0,30),
+		BackgroundColor3 = Color3.fromRGB(32, 32, 38),
+		BorderSizePixel = 0
+	})
+	-- 4
+	utility:Create("UIListLayout",{
+		Parent = tabslist,
+		Padding = UDim.new(0,1),
+		FillDirection = "Horizontal",
+		HorizontalAlignment = "Right"
+	})
+	local topbaraccent = utility:Create("Frame",{
+		Parent = topbar,
+		Size = UDim2.new(1,0,0,5),
+		Position = UDim2.new(0,0,1,0),
+		BackgroundColor3 = Color3.fromRGB(73, 74, 82),
+		BorderSizePixel = 0
+	})	
+	local topbartitle = utility:Create("Frame",{
+		Parent = topbar,
+		Size = UDim2.new(1,0,0,5),
+		AnchorPoint = Vector2.new(0,0.5),
+		Position = UDim2.new(0,8,0.5,0),
+		BackgroundTransparency = 1,
+	})
+	-- 5
+	local topbarlabel = utility:Create("TextLabel",{
+		Parent = topbartitle,
+		Text = name,
+		Size = UDim2.new(1,0,1,0),
+		BackgroundTransparency = 1,
+		TextSize = 14,
+		Font = Enum.Font.Ubuntu,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextStrokeColor3 = Color3.fromRGB(0,0,0),
+		TextStrokeTransparency = 0.5,
+		TextXAlignment = "Left"
+	})
+	topbartitle.Size = UDim2.new(0,topbarlabel.TextBounds.X+5,1,0)
+	local rgb = false
+	local currentrgbtween = nil
+	--
+	topbarlabel.MouseEnter:Connect(function()
+		rgb = true
+		while rgb do
+			local info = TweenInfo.new(
+				1,
+				Enum.EasingStyle.Quint,
+				Enum.EasingDirection.Out
+			)
+			currentrgbtween = ts:Create(topbarlabel,info,{TextColor3 = Color3.fromHSV(utility:ZigZag(counter),1,1)})
+			currentrgbtween:Play()
+			counter = counter+0.1
+			wait(1)
+		end
+	end)
+	topbarlabel.MouseLeave:Connect(function()
+		rgb = false
+		currentrgbtween:Cancel()
+		local info = TweenInfo.new(
+			0.5,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		)
+		local tween = ts:Create(topbarlabel,info,{TextColor3 = Color3.fromRGB(255,255,255)})
+		tween:Play()
+	end)
+	--
+	local dragging = false
+	local resizing = false
+	local dragX,dragY = 0,0
+	local ms = plr:GetMouse()
+	--
+	local resizer = utility:Create("TextButton",{
+		Parent = mainframe,
+		Size = UDim2.new(0,10,0,10),
+		Position = UDim2.new(1,-10,1,-10),
+		BackgroundTransparency = 1,
+		AutoButtonColor = false
+	})
+	--
+	topbar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragX,dragY = ms.X-topbar.AbsolutePosition.X,ms.Y-topbar.AbsolutePosition.Y
+		end
+	end)
+	--
+	resizer.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			resizing = true
+		end
+	end)
+	--
+	topbar.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
+	--
+	resizer.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			resizing = false
+		end
+	end)
+	--
+	uis.InputChanged:Connect(function()
+		if resizing then
+			local msY = ms.Y-mainframe.AbsolutePosition.Y
+			if msY<550 then msY=550 end
+			mainframe:TweenSize(UDim2.new(0,msY-100,0,msY),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+		end
+		if dragging then
+			local msX,msY = ms.X-dragX,ms.Y-dragY
+			mainframe:TweenPosition(UDim2.new(0,msX,0,msY),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+		end
+	end)
+	--
+	uis.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Insert then
+			screen.Enabled = not screen.Enabled
+		end
+	end)
+	--
+	accents["topbaraccent"] = topbaraccent
+	local content = {
+		screen = screen,
+		mainframe = mainframe,
+		background = background,
+		tabslist = tabslist,
+		topbar = topbar,
+		topbartitle = topbartitle,
+		topbarlabel = topbarlabel
+	}
+	return content
+end
+--
+local ismessage = false
+--
+library.newmessage = function(props)
+	if ismessage == true then repeat wait() until ismessage == false end
+	local uitable = props.Ui or props.UI or props.uI or props.ui
+	local name = props.Message or props.message or "new message"
+	if uitable then
+		local message = utility:Create("Frame",{
+			Parent = props.ui.mainframe,
+			Size = UDim2.new(1,0,1,0),
+			Position = UDim2.new(0,0,0,0),
+			BackgroundColor3 = Color3.fromRGB(0,0,0),
+			BorderSizePixel = 0,
+			BackgroundTransparency = 1,
+			Visible = true
+		})
+		local label = utility:Create("TextLabel",{
+			Parent = message,
+			Text = name,
+			Size = UDim2.new(1,0,1,0),
+			BackgroundTransparency = 1,
+			TextSize = 14,
+			Font = Enum.Font.Ubuntu,
+			TextColor3 = Color3.fromRGB(255,255,255),
+			TextStrokeColor3 = Color3.fromRGB(0,0,0),
+			TextStrokeTransparency = 0.5,
+			TextTransparency = 1
+		})
+		ismessage = true
+		local info = TweenInfo.new(
+			1,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		)
+		local tween = ts:Create(message,info,{BackgroundTransparency = 0.5})
+		tween:Play()
+		local info = TweenInfo.new(
+			1,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		)
+		local tween = ts:Create(label,info,{TextTransparency = 0})
+		tween:Play()
+		wait(1)
+		local calc = #label.Text*0.2
+		wait(calc)
+		local info = TweenInfo.new(
+			1,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.In
+		)
+		local tween = ts:Create(message,info,{BackgroundTransparency = 1})
+		tween:Play()
+		local info = TweenInfo.new(
+			1,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.In
+		)
+		local tween = ts:Create(label,info,{TextTransparency = 1})
+		tween:Play()
+		wait(1)
+		message:Remove()
+		ismessage = false
+	end
+end
+--
+local tbcooldown = false
+--
+library.newtab = function(props)
+	local uitable = props.Ui or props.UI or props.uI or props.ui
+	if uitable then
+		local name = props.Name or props.name or "new tab"
+		-- 1
+		local tabbutton = utility:Create("Frame",{
+			Parent = uitable.tabslist,
+			Size = UDim2.new(0,1000,1,0),
+			BackgroundTransparency = 1
+		})
+		-- 2
+		local button = utility:Create("TextButton",{
+			Parent = tabbutton,
+			Size = UDim2.new(1,0,1,0),
+			BackgroundTransparency = 1,
+			AutoButtonColor = false
+		})
+		local white = utility:Create("Frame",{
+			Parent = tabbutton,
+			Size = UDim2.new(1,-10,0,3),
+			Position = UDim2.new(0,5,1,0),
+			BackgroundColor3 = Color3.fromRGB(255,255,255),
+			BorderSizePixel = 0,
+			Visible = false
+		})
+		table.insert(whites,white)
+		local topbarlabel = utility:Create("TextLabel",{
+			Parent = tabbutton,
+			Text = name,
+			Size = UDim2.new(1,0,1,0),
+			BackgroundTransparency = 1,
+			TextSize = 14,
+			Font = Enum.Font.Ubuntu,
+			TextColor3 = Color3.fromRGB(119,119,122),
+			TextStrokeColor3 = Color3.fromRGB(0,0,0),
+			TextStrokeTransparency = 0.5
+		})
+		--
+		local x = topbarlabel.TextBounds.x+10
+		tabbutton.Size = UDim2.new(0,x,1,0)
+		--
+		local tab = utility:Create("Frame",{
+			Parent = uitable.background,
+			ClipsDescendants = true,
+			Size = UDim2.new(1,-20,1,-55),
+			Position = UDim2.new(0,10,0,45),
+			BackgroundColor3 = Color3.fromRGB(22, 22, 28),
+			BorderColor3 = Color3.fromRGB(36, 36, 41),
+			BorderSizePixel = 1,
+			Visible = false
+		})
+		table.insert(tabs,tab)
+		--
+		local sections = utility:Create("Frame",{
+			Parent = tab,
+			Size = UDim2.new(1,-30,1,-30),
+			Position = UDim2.new(0,15,0,15),
+			BackgroundTransparency = 1
+		})
+		--
+		local left = utility:Create("Frame",{
+			Parent = sections,
+			Size = UDim2.new(0.5,-10,1,0),
+			Position = UDim2.new(0,0,0,0),
+			BackgroundTransparency = 1
+		})
+		local right = utility:Create("Frame",{
+			Parent = sections,
+			Size = UDim2.new(0.5,-10,1,0),
+			Position = UDim2.new(0.5,10,0,0),
+			BackgroundTransparency = 1
+		})
+		--
+		utility:Create("UIListLayout",{
+			Parent = left,
+			Padding = UDim.new(0,15)
+		})
+		utility:Create("UIListLayout",{
+			Parent = right,
+			Padding = UDim.new(0,15)
+		})
+		--
+		button.MouseButton1Down:Connect(function()
+			if tbcooldown == false then
+				tbcooldown = true
+				if white.Visible == false then
+					for i,v in pairs(whites) do
+						if v ~= white and v.Visible == true then
+							spawn(function()
+								v.Size = UDim2.new(1,-10,0,3)
+								v:TweenSize(UDim2.new(0,0,0,3),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.15)
+								local info = TweenInfo.new(
+									0.2,
+									Enum.EasingStyle.Quint,
+									Enum.EasingDirection.In
+								)
+								local tween = ts:Create(v.Parent:FindFirstChildOfClass("TextLabel"),info,{TextColor3 = Color3.fromRGB(119,119,122)})
+								tween:Play()
+							end)
+							wait(0.25)
+							v.Visible = false
+						end
+					end
+					for i,v in pairs(tabs) do
+						if v ~= tab and v.Visible == true then
+							spawn(function()
+								v.Visible = false
+							end)
+						end
+					end
+					white.Size = UDim2.new(0,0,0,3)
+					white.Visible = true
+					tab.Visible = true
+					white:TweenSize(UDim2.new(1,-10,0,3),Enum.EasingDirection.In,Enum.EasingStyle.Quint,0.15)
+					local info = TweenInfo.new(
+						0.2,
+						Enum.EasingStyle.Quint,
+						Enum.EasingDirection.Out
+					)
+					local tween = ts:Create(topbarlabel,info,{TextColor3 = Color3.fromRGB(255,255,255)})
+					tween:Play()
+				end
+				wait(0.25)
+				tbcooldown = false
+			end
+		end)
+		--
+		tabbutton.MouseEnter:Connect(function()
+			if white.Visible == false then
+				local info = TweenInfo.new(
+					0.2,
+					Enum.EasingStyle.Quint,
+					Enum.EasingDirection.Out
+				)
+				local tween = ts:Create(topbarlabel,info,{TextColor3 = Color3.fromRGB(255,255,255)})
+				tween:Play()
+			end
+		end)
+		--
+		tabbutton.MouseLeave:Connect(function()
+			if white.Visible == false then
+				local info = TweenInfo.new(
+					0.2,
+					Enum.EasingStyle.Quint,
+					Enum.EasingDirection.In
+				)
+				local tween = ts:Create(topbarlabel,info,{TextColor3 = Color3.fromRGB(119,119,122)})
+				tween:Play()
+			end
+		end)
+		--
+		local content = {
+			tabbutton = tabbutton,
+			tab = tab,
+			button = button,
+			white = white,
+			sections = sections,
+			left = left,
+			right = right
+		}
+		return content
+	end
+end
+--
+library.newsection = function(props)
+	local side = props.Side or props.side or "left"
+	local tab = props.Tab or props.tab
+	local name = props.Name or props.name or "new tab"
+	side = string.lower(side)
+	local section = utility:Create("Frame",{
+		Parent = tab[side],
+		Size = UDim2.new(1,0,0,30),
+		BackgroundColor3 = Color3.fromRGB(33, 33, 39),
+		BorderColor3 = Color3.fromRGB(73, 73, 86),
+		BorderSizePixel = 1,
+	})
+	local titleholder = utility:Create("Frame",{
+		Parent = section,
+		Size = UDim2.new(1,-8,0,12),
+		Position = UDim2.new(0,8,0,-6),
+		BackgroundTransparency = 1
+	})
+	local title = utility:Create("TextLabel",{
+		Parent = titleholder,
+		Text = name,
+		Size = UDim2.new(1,0,1,0),
+		BackgroundTransparency = 1,
+		TextSize = 13,
+		Font = Enum.Font.Ubuntu,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextStrokeColor3 = Color3.fromRGB(0,0,0),
+		TextStrokeTransparency = 0.5,
+		TextXAlignment = "Left"
+	})
+	local content = utility:Create("Frame",{
+		Parent = section,
+		Size = UDim2.new(1,-20,1,-30),
+		Position = UDim2.new(0,10,0,15),
+		BackgroundTransparency = 1
+	})
+	table.insert(sections,content)
+	utility:Create("UIListLayout",{
+		Parent = content,
+		Padding = UDim.new(0,10)
+	})
+	return content
+end
+--
+library.newtoggle = function(props)
+	local name = props.Name or props.name or "new toggle"
+	local callback = props.Callback or props.callback or props.CallBack or props.callBack or function()end
+	local section = props.section or props.Section
+	--
+	local holder = utility:Create("Frame",{
+		Parent = section,
+		Size = UDim2.new(1,0,0,12),
+		BackgroundTransparency = 1
+	})
+	local button = utility:Create("TextButton",{
+		Parent = holder,
+		Name = "at",
+		AutoButtonColor = false,
+		Text = "",
+		Size = UDim2.new(0,12,0,12),
+		BackgroundColor3 = Color3.fromRGB(73,74,82),
+		BorderColor3 = Color3.fromRGB(26,26,32)
+	})
+	local title = utility:Create("TextLabel",{
+		Parent = holder,
+		Text = name,
+		Size = UDim2.new(1,-17,1,0),
+		Position = UDim2.new(0,17,0,1),
+		BackgroundTransparency = 1,
+		TextSize = 10,
+		Font = Enum.Font.Ubuntu,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextStrokeColor3 = Color3.fromRGB(0,0,0),
+		TextStrokeTransparency = 0.5,
+		TextXAlignment = "Left"
+	})
+	local size = section.Parent.AbsoluteSize.Y
+	section.Parent.Size = UDim2.new(1,0,0,30+section:FindFirstChildOfClass("UIListLayout").AbsoluteContentSize.y)
+	--
+	local toggled = false
+	local storedcol = Color3.fromRGB(73,74,82)
+	--
+	button.MouseButton1Down:Connect(function()
+		toggled = not toggled
+		if toggled then
+			callback(toggled)
+			local info = TweenInfo.new(
+				0.15,
+				Enum.EasingStyle.Quint,
+				Enum.EasingDirection.Out
+			)
+			local tween = ts:Create(button,info,{BackgroundColor3 = Color3.fromRGB(110,110,117)})
+			storedcol = Color3.fromRGB(110,110,117)
+			tween:Play()
+		else
+			callback(toggled)
+			local info = TweenInfo.new(
+				0.15,
+				Enum.EasingStyle.Quint,
+				Enum.EasingDirection.In
+			)
+			local tween = ts:Create(button,info,{BackgroundColor3 = Color3.fromRGB(73,74,82)})
+			storedcol = Color3.fromRGB(73,74,82)
+			tween:Play()
+		end
+	end)
+	--
+	button.MouseEnter:Connect(function()
+		local info = TweenInfo.new(
+			0.25,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		)
+		local tween = ts:Create(button,info,{BackgroundColor3 = Color3.fromRGB(100,100,100)})
+		tween:Play()
+	end)
+	--
+	button.MouseLeave:Connect(function()
+		local info = TweenInfo.new(
+			0.25,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		)
+		local tween = ts:Create(button,info,{BackgroundColor3 = storedcol})
+		tween:Play()
+	end)
+	--
+	return button
+end
+--
+library.newslider = function(props)
+	local name = props.Name or props.name or "new toggle"
+	local callback = props.Callback or props.callback or props.CallBack or props.callBack or function()end
+	local section = props.section or props.Section
+	local def,min,max = props.def or props.Def or props.default or props.Default or 0,props.min or props.Min or props.minimum or props.Minimum or 0,props.max or props.Max or props.maximum or props.Maximum or 100
+	local prefix = name..":" or ""
+	if prefix ~= "" then
+		prefix = prefix.." "
+	end
+	local measure = props.measure or props.Measure or ""
+	local rounded = props.round or props.Round or props.rounded or props.Rounded or false
+	--
+	local holder = utility:Create("Frame",{
+		Parent = section,
+		Size = UDim2.new(1,0,0,30),
+		BackgroundTransparency = 1
+	})
+	local button = utility:Create("TextButton",{
+		Parent = holder,
+		AutoButtonColor = false,
+		Text = "",
+		Size = UDim2.new(1,0,0,11),
+		Position = UDim2.new(0,0,0,15),
+		BackgroundColor3 = Color3.fromRGB(73, 74, 82),
+		BorderSizePixel = 0
+	})
+	local label = utility:Create("TextLabel",{
+		Parent = holder,
+		Text = name,
+		Size = UDim2.new(1,0,0,10),
+		Position = UDim2.new(0,0,0,0),
+		BackgroundTransparency = 1,
+		TextSize = 10,
+		Font = Enum.Font.Ubuntu,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		TextStrokeColor3 = Color3.fromRGB(0,0,0),
+		TextStrokeTransparency = 0.5,
+		TextXAlignment = "Left"
+	})
+	local accent = utility:Create("TextButton",{
+		Parent = button,
+		Name = "as",
+		AutoButtonColor = false,
+		Text = "",
+		Size = UDim2.new(1,0,1,0),
+		Position = UDim2.new(0,0,0,0),
+		BackgroundColor3 = Color3.fromRGB(180, 180, 184),
+		BorderSizePixel = 0
+	})
+	local drag = utility:Create("TextButton",{
+		Parent = accent,
+		AutoButtonColor = false,
+		Text = "",
+		Size = UDim2.new(0,4,1,4),
+		Position = UDim2.new(1,-2,0,-2),
+		BackgroundColor3 = Color3.fromRGB(150, 150, 150),
+		BorderSizePixel = 0
+	})
+	--
+	local mouse = plr:GetMouse()
+	local sliding = false
+	--
+	accent.Size = UDim2.new((1/(max-min))*def,0,1,0)
+	--
+	accent.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local msX = (mouse.X-button.AbsolutePosition.X)/button.AbsoluteSize.X
+			if msX<0 then msX=0 end
+			if msX>1 then msX=1 end
+			accent:TweenSize(UDim2.new(msX,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+			local result = (max*msX) - (min*msX) + min
+			if rounded == true then
+				result = tostring(math.floor(result))
+			else
+				result = utility:Round(result,2)
+			end
+			label.Text = prefix..tostring(result)..measure..' / '..tostring(max)..measure
+			callback(result)
+			sliding=true
+		end
+	end)
+	--
+	drag.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local msX = (mouse.X-button.AbsolutePosition.X)/button.AbsoluteSize.X
+			if msX<0 then msX=0 end
+			if msX>1 then msX=1 end
+			accent:TweenSize(UDim2.new(msX,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+			local result = (max*msX) - (min*msX) + min
+			if rounded == true then
+				result = tostring(math.floor(result))
+			else
+				result = utility:Round(result,2)
+			end
+			label.Text = prefix..tostring(result)..measure..' / '..tostring(max)..measure
+			callback(result)
+			sliding=true
+		end
+	end)
+	--
+	button.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			local msX = (mouse.X-button.AbsolutePosition.X)/button.AbsoluteSize.X
+			if msX<0 then msX=0 end
+			if msX>1 then msX=1 end
+			accent:TweenSize(UDim2.new(msX,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+			local result = (max*msX) - (min*msX) + min
+			if rounded == true then
+				result = tostring(math.floor(result))
+			else
+				result = utility:Round(result,2)
+			end
+			label.Text = prefix..tostring(result)..measure..' / '..tostring(max)..measure
+			callback(result)
+			sliding=true
+		end
+	end)
+	--
+	accent.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			sliding=false
+			label.Text = name
+		end
+	end)
+	--
+	drag.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			sliding=false
+			label.Text = name
+		end
+	end)
+	--
+	button.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			sliding=false
+			label.Text = name
+		end
+	end)
+	--
+	uis.InputChanged:Connect(function()
+		if sliding then
+			local msX = (mouse.X-button.AbsolutePosition.X)/button.AbsoluteSize.X
+			if msX<0 then msX=0 end
+			if msX>1 then msX=1 end
+			accent:TweenSize(UDim2.new(msX,0,1,0),Enum.EasingDirection.Out,Enum.EasingStyle.Quint,0.25,true)
+			local result = (max*msX) - (min*msX) + min
+			if rounded == true then
+				result = tostring(math.floor(result))
+			else
+				result = utility:Round(result,2)
+			end
+			label.Text = prefix..tostring(result)..measure..' / '..tostring(max)..measure
+			callback(result)
+		end
+	end)
+end
+--
+return library
