@@ -472,7 +472,7 @@ library.newtab = function(props)
 			if tbcooldown == false then
 				tbcooldown = true
 				if white.Visible == false then
-					for i,v in pairs(whites) do
+					spawn(function() for i,v in pairs(whites) do
 						if v ~= white and v.Visible == true then
 							spawn(function()
 								v.Size = UDim2.new(1,-10,0,3)
@@ -488,7 +488,7 @@ library.newtab = function(props)
 							wait(0.25)
 							v.Visible = false
 						end
-					end
+					end end)
 					for i,v in pairs(tabs) do
 						if v ~= tab and v.Visible == true then
 							spawn(function()
@@ -947,5 +947,5 @@ library.newslider = function(props)
 	end)
 end
 --
-print("update 1")
+print("update 2")
 return library
