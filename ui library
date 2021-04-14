@@ -134,8 +134,8 @@ library.new = function(props)
 	-- 1
 	local screen = utility:Create("ScreenGui",{
 		Parent = plr.PlayerGui,
-		DisplayOrder = 9999,
 		Name = name,
+		DisplayOrder = 999,
 		ZIndexBehavior = "Sibling"
 	})
 	-- 2
@@ -295,6 +295,11 @@ library.new = function(props)
 	uis.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == Enum.KeyCode.Insert then
 			screen.Enabled = not screen.Enabled
+			if screen.Enabled == true then
+				game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.Default
+			else
+				game:GetService("UserInputService").MouseBehavior = Enum.MouseBehavior.LockCenter
+			end
 		end
 	end)
 	--
