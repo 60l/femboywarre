@@ -281,7 +281,11 @@ rs.RenderStepped:Connect(function()
 			if hitboxpart ~= nil then
 				local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(hitboxpart.Position)
 				vars.legitsatarget = hitboxpart
+			else
+				vars.legitsatarget = nil
 			end
+		else
+			vars.legitsatarget = nil
 		end
 	end
 end)
