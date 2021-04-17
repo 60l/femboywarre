@@ -1,0 +1,287 @@
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/60l/femboywarre/main/ui%20library"))()
+--
+local plrs = game.Players
+local plr = plrs.LocalPlayer
+local mouse = plr:GetMouse()
+local rep = game:GetService("ReplicatedStorage")
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+local cbc = getsenv(plr.PlayerGui:WaitForChild("Client"))
+--
+local vars = {
+	legitsaenabled = false,
+	legitsatc = false,
+	legitsavc = false,
+	legitsatarget = nil,
+	legitsapart = {"Head","Chest"},
+	triggerbotenabled = false,
+	triggerbotpart = {"Head","Chest"},
+	trigerbotdelay = 1,
+	antivk = false,
+	ragebot = {
+		enabled = false,
+		teamcheck = false,
+		visibilitycheck = false,
+		target = nil,
+	},
+	visuals = {
+		bullettracers = false,
+		bullettracerstime = 2000,
+		bulletimpacts = false,
+		bulletimpactstime = 2000
+	},
+	gunmods = {
+		fullauto = false,
+		firerate = false,
+		reloadtime = false,
+		equiptime = false,
+		penetration = false,
+		wallbang = false,
+		range = false,
+		rangemodifier = false,
+		spread = false,
+		infammo = false,
+		other = {
+			damagemulten = false,
+			damagemult = 1
+		}
+	}
+}
+--
+local newui = library.new({name = "Amogus.pro"})
+--
+local aimbot = library.newtab({name = "Aimbot",ui = newui})
+local visuals = library.newtab({name = "Visuals",ui = newui})
+local aa = library.newtab({name = "Anti-Aim",ui = newui})
+local misc = library.newtab({name = "Misc",ui = newui})
+local mods = library.newtab({name = "Mods",ui = newui})
+local skins = library.newtab({name = "Skins",ui = newui})
+local settings = library.newtab({name = "Settings",ui = newui})
+--
+local silent = library.newsection({name = "Silent-Aim",tab = aimbot,side = "left"})
+local rage = library.newsection({name = "Rage-Bot",tab = aimbot,side = "left"})
+local legit = library.newsection({name = "Legit-Bot",tab = aimbot,side = "right"})
+local tbsec = library.newsection({name = "Trigger-Bot",tab = aimbot,side = "right"})
+--
+local gmods = library.newsection({name = "Gun-Mods",tab = mods,side = "left"})
+local gmods_other = library.newsection({name = "Other",tab = mods,side = "right"})
+--
+local miscmain = library.newsection({name = "Main",tab = misc,side = "left"})
+--
+local visuals_main = library.newsection({name = "Main",tab = visuals,side = "left"})
+local visuals_misc = library.newsection({name = "Misc",tab = visuals,side = "right"})
+--
+library.newtoggle({name = "Enabled",section = silent,callback = function(val) vars.legitsaenabled=val end})
+library.newtoggle({name = "Team Check",section = silent,callback = function(val) vars.legitsatc=val end})
+library.newtoggle({name = "Visual Check",section = silent,callback = function(val) vars.legitsavc=val end})
+--
+library.newtoggle({name = "Enabled",section = rage,callback = function(val) vars.ragebot.enabled=val end})
+library.newtoggle({name = "Team Check",section = rage,callback = function(val) vars.ragebot.teamcheck=val end})
+library.newtoggle({name = "Visual Check",section = rage,callback = function(val) vars.ragebot.visibilitycheck=val end})
+--
+library.newtoggle({name = "Bullet Tracers",section = visuals_misc,callback = function(val) vars.visuals.bullettracers=val end})
+library.newslider({name = "Stay Time",section = visuals_misc,def = 3000,min = 500,max = 5000,measure = "ms",rounded = false,callback = function(val) vars.visuals.bullettracerstime=val end})
+library.newtoggle({name = "Bullet Impacts",section = visuals_misc,callback = function(val) vars.visuals.bulletimpacts=val end})
+library.newslider({name = "Stay Time",section = visuals_misc,def = 3000,min = 500,max = 5000,measure = "ms",rounded = false,callback = function(val) vars.visuals.bulletimpactstime=val end})
+--
+library.newtoggle({name = "No-Recoil",section = gmods,callback = function(val)
+	if val == true then
+		game:GetService("RunService"):BindToRenderStep("NoRecoil", 100, function()
+			cbc.resetaccuracy()
+			cbc.RecoilX = 0
+			cbc.RecoilY = 0
+		end)
+	elseif val == false then
+		game:GetService("RunService"):UnbindFromRenderStep("NoRecoil")
+	end
+end})
+library.newtoggle({name = "No-Spread",section = gmods,callback = function(val) vars.gunmods.spread=val end})
+library.newtoggle({name = "Full-Auto",section = gmods,callback = function(val) vars.gunmods.fullauto=val end})
+library.newtoggle({name = "Fire-Rate",section = gmods,callback = function(val) vars.gunmods.firerate=val end})
+library.newtoggle({name = "Fast-Reload",section = gmods,callback = function(val) vars.gunmods.reloadtime=val end})
+library.newtoggle({name = "Instant-Equip",section = gmods,callback = function(val) vars.gunmods.equiptime=val end})
+library.newtoggle({name = "Inf-Penetration",section = gmods,callback = function(val) vars.gunmods.penetration=val end})
+library.newtoggle({name = "Wallbang",section = gmods,callback = function(val) vars.gunmods.wallbang=val end})
+library.newtoggle({name = "Inf-Range",section = gmods,callback = function(val) vars.gunmods.range=val end})
+library.newtoggle({name = "Range-Modifier",section = gmods,callback = function(val) vars.gunmods.rangemodifier=val end})
+library.newtoggle({name = "Inf-Ammo",section = gmods,callback = function(val) vars.gunmods.infammo=val end})
+--
+library.newtoggle({name = "Damage Multiplier",section = gmods_other,callback = function(val) vars.gunmods.other.damagemulten=val end})
+library.newslider({name = "Multiplier Ammount",section = gmods_other,def = 1,min = 0.1,max = 100,measure = "x",rounded = false,callback = function(val) vars.gunmods.other.damagemult=val end})
+--
+library.newtoggle({name = "Anti-Votekick",section = miscmain,callback = function(val) vars.antivk=false end})
+--
+library.newlabel({name = "Helloo",section = visuals_main})
+library.newbutton({name = "button lol",section = visuals_main,callback = function(val) print("clicked") end})
+--
+local componoments = Instance.new("Folder", workspace)
+componoments.Name = "componoments"
+--
+local function alive(plrx)
+	if plrx and plrx.Character and plrx.Character.FindFirstChild(plrx.Character, "Humanoid") and plrx.Character.Humanoid.Health > 0 then
+		return true
+	end
+	return false	
+end
+--
+local function getteam(plrx)
+	return game.Teams[plrx.Team.Name]
+end
+--
+local function visible(plrx)
+	return #workspace.CurrentCamera:GetPartsObscuringTarget({plr.Character.Head.Position, plrx.Character.Head.Position}, {plr.Character, componoments}) == 0 and true or false
+end
+--
+local function legittarget()
+	local target,oldval = nil,math.huge
+	for i,v in pairs(game.Players:GetPlayers()) do
+		if alive(v) and v ~= plr and not v.Character:FindFirstChild("ForceField") then
+			if getteam(v) ~= getteam(plr) then
+				if plr.Character and plr.Character:FindFirstChild("Head") and visible(v) then
+					local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(v.Character.Head.Position)
+					local FoV = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude	
+					if FoV < oldval then
+						target = v
+						oldval = FoV
+					end
+				end
+			end
+		end
+	end
+	return target
+end
+--
+local hbs = {
+	["Head"] = {"Head"},
+	["Chest"] = {"UpperTorso", "LowerTorso"},
+	["Arms"] = {"LeftUpperArm", "LeftLowerArm", "LeftHand", "RightUpperArm", "RightLowerArm", "RightHand"},
+	["Legs"] = {"LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot"}
+}
+--
+local function legithb(plr)
+	local target,oldval = nil,math.huge
+	for i,v in pairs(vars.legitsapart) do
+		for i2,v2 in pairs(hbs[v]) do
+			local targetpart = plr.Character:FindFirstChild(v2)
+			if targetpart ~= nil then
+				local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(targetpart.Position)
+				local FoV = (Vector2.new(mouse.X, mouse.Y) - Vector2.new(Vector.X, Vector.Y)).magnitude
+				if FoV < oldval then
+					target = targetpart
+					oldval = FoV
+				end
+			end
+		end
+	end
+	return target
+end
+--
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall	
+local oldNewIndex = getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__newindex
+local oldIndex = getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index
+if setreadonly then setreadonly(mt, false) else make_writeable(mt, true) end
+mt.__namecall = newcclosure(function(self, ...)
+	local method = getnamecallmethod()
+	local callingscript = getcallingscript()
+	local args = {...}
+	if not checkcaller() then
+		if method == "Kick" then
+			return
+		elseif method == "FindPartOnRayWithIgnoreList" and args[2][1] == workspace.Debris then
+			if vars.gunmods.wallbang == true then
+				table.insert(args[2], workspace.Map)
+			end
+			if alive(plr) and vars.legitsatarget ~= nil and typeof(vars.legitsatarget) == "Instance" then
+				args[1] = Ray.new(plr.Character.Head.Position, (vars.legitsatarget.Position - plr.Character.Head.Position).unit * 2048)
+			end
+		elseif self.Name == "HitPart" then
+			if vars.gunmods.other.damagemulten == true then
+				args[8] = args[8] * vars.gunmods.other.damagemult
+			end
+			if vars.visuals.bullettracers == true then
+				spawn(function()
+					local BulletTracers = Instance.new("Part")
+					BulletTracers.Anchored = true
+					BulletTracers.Locked = true
+					BulletTracers.CanCollide = false
+					BulletTracers.Material = "ForceField"
+					BulletTracers.Color = Color3.fromRGB(255,0,0)
+					BulletTracers.Size = Vector3.new(0.1, 0.1, (plr.Character.Head.CFrame.p - args[2]).magnitude)
+					BulletTracers.CFrame = CFrame.new(plr.Character.Head.CFrame.p, args[2]) * CFrame.new(0, 0, -BulletTracers.Size.Z / 2)
+					BulletTracers.Name = "BulletTracers"
+					BulletTracers.Parent = workspace.CurrentCamera
+					wait(vars.visuals.bullettracerstime/100)
+					BulletTracers:Destroy()
+				end)
+			end
+			if vars.visuals.bulletimpacts == true then
+				spawn(function()
+					local BulletImpacts = Instance.new("Part")
+					BulletImpacts.Anchored = true
+					BulletImpacts.CanCollide = false
+					BulletImpacts.Locked = true
+					BulletImpacts.Material = "ForceField"
+					BulletImpacts.Color = Color3.fromRGB(255,255,255)
+					BulletImpacts.Size = Vector3.new(0.25, 0.25, 0.25)
+					BulletImpacts.CFrame = CFrame.new(args[2])
+					BulletImpacts.Name = "BulletImpacts"
+					BulletImpacts.Parent = workspace.CurrentCamera
+					wait(vars.visuals.bulletimpactstime/100)
+					BulletImpacts:Destroy()
+				end)
+			end
+		end
+	end
+	return oldNamecall(self, unpack(args))
+end)
+--
+getrawmetatable(game.Players.LocalPlayer.PlayerGui.Client).__index = newcclosure(function(...)
+	local args = {...}
+	if not checkcaller() then
+		if args[2] == "Value" then
+			if args[1].Name == "Auto" and vars.gunmods.fullauto == true then
+				return true
+			elseif args[1].Name == "FireRate" and vars.gunmods.firerate == true then
+				return 0.001
+			elseif args[1].Name == "ReloadTime" and vars.gunmods.reloadtime == true then
+				return 0.001
+			elseif args[1].Name == "EquipTime" and vars.gunmods.equiptime == true then
+				return 0.001
+			elseif args[1].Name == "Penetration" and vars.gunmods.penetration == true then
+				return 200
+			elseif args[1].Name == "Range" and vars.gunmods.range == true then
+				return 9999
+			elseif args[1].Name == "RangeModifier" and vars.gunmods.rangemodifier == true then
+				return 100
+			elseif (args[1].Name == "Spread" or args[1].Parent.Name == "Spread") and vars.gunmods.spread == true then
+				return 0
+			elseif (args[1].Name == "Ammo" or args[1].Name == "StoredAmmo") and vars.gunmods.infammo == true then
+				return 999999
+			end
+		end
+	end
+	return oldIndex(...)
+end)
+--
+rep.Events.SendMsg.OnClientEvent:Connect(function(message)
+	if vars.antivk == true then
+		local msg = string.split(message, " ")
+		if game.Players:FindFirstChild(msg[1]) and msg[7] == "1" or msg[7] == "2" and msg[12] == game.Players.LocalPlayer.Name then
+			game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, plr)
+		end
+	end
+end)
+--
+rs.RenderStepped:Connect(function()
+	if vars.legitsaenabled then
+		local target = legittarget()
+		if target ~= nil then
+			local hitboxpart = legithb(target)
+			if hitboxpart ~= nil then
+				local Vector, onScreen = workspace.CurrentCamera:WorldToScreenPoint(hitboxpart.Position)
+				vars.legitsatarget = hitboxpart
+			end
+		end
+	end
+end)
